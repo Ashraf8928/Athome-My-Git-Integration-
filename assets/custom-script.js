@@ -481,3 +481,30 @@ $(window).scroll(function(){
         //$('nav div').removeClass('visible-title');
     }
 });
+
+// Voice Search
+
+
+if ('webkitSpeechRecognition' in window) {
+  const recognition = new webkitSpeechRecognition();
+  
+  recognition.continuous = false;  
+  recognition.lang = 'en-US'; 
+
+  const searchInput = document.getElementsByClassName('voice__search');
+  const voiceSearchButton = document.getElementById('voice__mic__btn');
+  
+  voiceSearchButton.addEventListener('click', () => {
+    recognition.start();
+  });
+  
+  recognition.onresult = (event) => {
+    const result = event.results[0][0].transcript; 
+    searchInput.value = result; 
+  };
+} else {
+  console.log('Speech recognition not supported');
+}
+
+
+
