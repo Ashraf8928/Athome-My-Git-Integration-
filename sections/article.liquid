@@ -1,0 +1,293 @@
+{%- liquid
+  comment
+    Translations
+  endcomment
+
+  assign written_by_t = 'blog.article.written_by' | t
+
+  comment
+    Variables
+  endcomment
+
+  assign show_date = section.settings.show-date
+  assign show_author = section.settings.show-author
+  assign show_share = section.settings.show-share
+  assign show_featured = section.settings.show-featured
+  assign title_position = section.settings.title-position
+-%}
+
+{% comment %} View {% endcomment %}
+<div
+  class="article--root"
+  data-section-id="{{ section.id }}"
+  data-title-position="{{ title_position }}"
+  data-show-author="{{ show_author }}"
+  data-show-date="{{ show_date }}"
+  data-show-featured="{{ show_featured }}"
+  itemscope
+  itemtype="http://schema.org/BlogPosting"
+>
+  <div class="article--wrapper">
+   <div class="row custom-article">
+    <div class="col-red-8">
+    <div class="article--heading">
+      <div class="article--header--info">
+        <h1 class="article--title" data-item="section-heading">
+          {{ article.title }}
+        </h1>
+
+
+{% if show_date or show_author or show_share %}
+        <div class="article--info" data-position="by-self">
+
+          {% if show_date %}
+            <div class="article--timesince" data-item='light-accent-text'>
+              {%
+                render "utils",
+                utility: "timesince",
+                created_at: article.published_at
+              %}
+            </div>
+          {% endif %}
+
+          {% if show_date and show_author %}
+            <span class="article--dot" data-mq="medium-large">&CenterDot;</span>
+          {% endif %}
+
+          {% if show_author %}
+            <div class="article--author" data-item="caption">
+              <img src="https://cdn.shopify.com/s/files/1/0099/2867/1291/t/197/assets/Shape-2.png?v=1655384809" alt="" title="">{{ written_by_t }} {{ article.author }}
+            </div>
+          {% endif %}
+          {%if show_share %}
+          <a  ><span> Share</span> <img src="https://cdn.shopify.com/s/files/1/0099/2867/1291/files/Share.svg?v=1670406534" width="25px;" alt="" title="">
+         </a>{% endif %}
+         {% render 'social-sharing', share_title: article.title, share_permalink: article.url, share_image: article.image %}
+
+        </div>
+      {% endif %}
+
+
+
+
+
+        
+        {% if show_date or show_author or show_share %}
+          <div class="article--info" data-position="grouped-with-title">
+
+            {% if show_date %}
+              <div class="article--timesince" data-item="light-accent-text">
+                {%
+                  render "utils",
+                  utility: "timesince",
+                  created_at: article.published_at
+                %}
+              </div>
+            {% endif %}
+
+            {% if show_date and show_author %}
+              <span class="article--dot" data-mq="medium-large">&CenterDot;</span>
+            {% endif %}
+
+            {% if show_author %}
+              <div class="article--author" data-item="caption">
+                {{ written_by_t }}<img src="https://cdn.shopify.com/s/files/1/0099/2867/1291/t/197/assets/Shape-2.png?v=1655384809" alt="" title=""> {{ article.author }}
+              </div>
+            {% endif %}
+            <div class="share_social_blog_btn">
+            {%if show_share %}
+           
+         <a class="remove" ><span> Share</span> <img src="https://cdn.shopify.com/s/files/1/0099/2867/1291/files/Share.svg?v=1670406534" alt="" title="">
+          </a>
+                
+            {% render 'social-sharing', share_title: article.title, share_permalink: article.url, share_image: article.image %} {% endif %}            
+          </div>
+        {% endif %}
+          </div>
+      </div>
+
+      {% if show_featured and article.image %}
+        <div class="article--image">
+          {%
+            render "image",
+            image: article.image,
+            full_width: true,
+            max_height: 600
+          %}
+        </div>
+      {% endif %}
+
+      </div>{% if article.content.size > 0 %}
+      <div class="article--content" data-item="rte-content">
+        {{ article.content }}
+      </div>
+    {% endif %}
+     </div>
+      <div class="col-red-4">
+        <div class="grid__item one-whole medium--one-half large--three-tenths article-sidebar">
+          <div class="1-whole sidebar_categories1">
+          <h2>Product Catagories</h2>
+       {% if section.settings.menu-title != blank %}
+                <div class="footer--block--heading" data-item="block-heading">
+                  {{ section.settings.menu-title | escape }}
+                </div>
+              {% endif %}
+
+              <div class="footer--block--body" role="navigation" data-item="paragraph">
+                {% if linklists[section.settings.menu].links.size > 0 %}
+                  {% assign footer_nav = section.settings.menu %}
+
+                  <ul
+                    class="footer--menu1">
+                    {% for link in linklists[footer_nav].links %}
+                      <li>
+                        <a href="{{ link.url }}" title="{{ link.title }}">
+                          {{ link.title }}
+                        </a>
+                      </li>
+                    {% endfor %}
+                  </ul>
+                {% endif %}
+          </div>
+          </div>
+        <div class="2-whole sidebar_categories2">
+        <h2>Recent Posts</h2>
+        <ul>
+       {% assign skip_articles = article.handle | split: '.....' %}
+       
+       {% for article in blogs['blog'].articles %}
+          
+           {% unless skip_articles contains article.handle %}
+          {% if forloop.index < 6 %}
+          <li>
+            <div class="article-imgs"><img src="{{ article.image.src | image_url: width: 60 }}">
+              <a href="{{article.url }}"><h6>{{ article.title | escape }}</h6></a>
+              <p>{{ article.created_at | date: "%b %d, %y" }}</p>
+            </div>
+          <li>
+             {% endif %}
+          {% endunless %}
+           
+        {% endfor %}
+           
+        </ul> 
+      </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<style>
+.template--article .article--root .custom-article .col-red-8 .article--header--info .article--info a:hover + .sharing.social-links {
+    display: block!important;
+}
+/*   .sharing.social-links {
+    display: none;
+} */
+   
+  .template--article .article--root .custom-article .col-red-8 .article--header--info .article--info a:hover + .sharing.social-links .sharing-list{display: block!importat;}
+     .template--article .article--root .custom-article .col-red-8 .article--header--info .article--info a:hover + .sharing.social-links ul.sharing-list {
+    z-index: 3;
+    right: 35px;
+    position: relative;
+    width: 100%!important;
+    margin-top: -6px;
+    text-align: left;
+    padding: 16px 6px;
+    border-radius: 10px;
+    background-color: #fff;
+    border: solid 1px #eff1f4;
+    box-shadow: 0 0 10px #0003;
+     display: flex !important;    align-items: center;
+}
+  .template--article .article--root .custom-article .col-red-8 .article--header--info .article--info a:hover + .sharing.social-links .sharing-list{display: block!importat;}
+   ul.sharing-list li {
+    display: inline-flex;
+}
+@media(max-width:767px)
+  {
+   .template--article .article--root .custom-article .col-red-8 .article--header--info .article--info a:hover + .sharing.social-links ul.sharing-list {
+    z-index: 3;
+    right: 35px;
+    position: relative;
+    width: 100%!important;
+    margin-top: -6px;
+    text-align: left;
+    padding: 16px 6px;
+    border-radius: 10px;
+    background-color: #fff;
+    border: solid 1px #eff1f4;
+    box-shadow: 0 0 10px #0003;
+     display: flex !important;    align-items: center; 
+}
+
+   .template--article .article--root .custom-article .col-red-8 .article--header--info .article--info a:hover + .sharing.social-links {
+    display: block!important;
+} 
+    
+  }
+  
+</style>
+{% schema %}
+{
+  "name": "Article",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Featured image"
+    },
+    {
+      "id": "show-featured",
+      "label": "Show",
+      "type": "checkbox",
+      "default": true
+    },
+    {
+      "id": "title-position",
+      "label": "Position title",
+      "type": "select",
+      "options": [
+        { "value": "above", "label": "Above" },
+        { "value": "left", "label": "Left" },
+        { "value": "below", "label": "Below" }
+      ],
+      "default": "below"
+    },
+    {
+      "type": "header",
+      "content": "General"
+    },
+    {
+      "id": "show-date",
+      "label": "Show article date",
+      "type": "checkbox",
+      "default": true
+    },
+    {
+      "id": "show-author",
+      "label": "Show author",
+      "type": "checkbox",
+      "default": true
+    },
+  {
+      "id": "show-share",
+      "label": "Show share ",
+      "type": "checkbox",
+      "default": true
+    },
+  {
+          "type": "text",
+          "id": "menu-title",
+          "label": "Title",
+          "default": "Quick links"
+        },
+        {
+          "type": "link_list",
+          "id": "menu",
+          "label": "Menu",
+          "default": "footer",
+          "info": "This menu won't show submenu items."
+        }
+  ]
+}
+{% endschema %}

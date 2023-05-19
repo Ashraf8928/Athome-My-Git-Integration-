@@ -1,0 +1,66 @@
+<div class="fixed-mobile-bottom-bar">
+
+{%- comment -%} TOOLBAR TOP MOBILE {%- endcomment -%}
+{%- if request.page_type == 'collection' or request.page_type == 'search' -%}
+<div class="boost-pfs-filter-toolbar-top-mobile">
+  <div class="boost-pfs-filter-toolbar-top-mobile-inner">
+    <div class="boost-pfs-filter-top-sorting boost-pfs-filter-top-sorting-mobile boost-pfs-filter-custom-sorting">{%- render 'boost-pfs-filter-skeleton', type: 'button' -%}</div>
+    <div class="boost-pfs-filter-tree-mobile-button" data-filter-tree-id="boost-pfs-filter-tree">{%- render 'boost-pfs-filter-skeleton', type: 'button' -%}</div>
+  </div>
+</div>
+{% endif %}
+{%- comment -%} END TOOLBAR TOP MOBILE {%- endcomment -%}
+
+    <ul>
+        <li class="track-order"><a href="https://www.at-home.co.in/pages/track-my-order">
+                <img src="https://cdn.shopify.com/s/files/1/0099/2867/1291/files/track_order_c785e9be-b74a-4999-8952-56b9057e4e5b.svg?v=1670397893">
+                <h6>Track order</h6>
+            </a>
+        </li>
+        <li class="wishlist" >
+          <a  href="https://www.at-home.co.in/apps/iwish">
+            <div style="position:relative;width:auto;">
+            <img src="https://cdn.shopify.com/s/files/1/0099/2867/1291/files/Like_heart.svg?v=1670397893" alt="">
+            <span class="iWishCount" style="
+    font-size: 11px;
+    background-color: #d51218;
+    padding: 2px;
+    border-radius: 50px;
+    color: #fff;
+    position: relative;
+  top: -5px;
+    left: 38px;
+    width: 20px;
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+    text-align: center;
+    line-height: 17px;
+    position: absolute;
+"></span><h6>Wishlist</h6>
+            </div>
+                
+            </a>
+        </li>
+        <li class="cart"><a href="https://www.at-home.co.in/cart">
+                <img src="https://cdn.shopify.com/s/files/1/0099/2867/1291/files/Add_to_cart_d9b8c732-15ac-4853-9d8e-97d25e458979.svg?v=1670397893"> <span class="cart--external--icon" data-item-count="{{ cart.item_count }}">
+          <span class="cart--external--total-items">{{ cart.item_count }}</span>
+          </span>
+                <h6>Cart </h6>
+            </a>
+        </li>
+        <li class="login">
+          {% if shop.customer_accounts_enabled %}
+                {% if customer %}
+          <a href="https://www.at-home.co.in/account/">
+                <img src="https://cdn.shopify.com/s/files/1/0099/2867/1291/files/Profile_fe91ac5f-4945-447c-b8e6-939741833aeb.svg?v=1670397893" alt="" title="">
+                  <h6>My Account</h6></a>
+          {% else %}
+                  <a href="https://www.at-home.co.in/account/login">
+                <img src="https://cdn.shopify.com/s/files/1/0099/2867/1291/files/Profile_fe91ac5f-4945-447c-b8e6-939741833aeb.svg?v=1670397893" alt="" title="">
+                  <h6>LogIn</h6></a>
+                  {% endif %}
+                {% endif %}
+        </li>
+    </ul>
+</div>

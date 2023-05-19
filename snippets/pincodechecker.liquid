@@ -1,0 +1,227 @@
+<style>
+  .product-pincode-info {
+    position:relative;
+  }
+  
+  .preloader {
+    position:absolute;
+   	width: 31%;
+    height: 25%;
+    z-index:2;
+    display:block;
+    background: #f7f6f4;
+    padding: 44px 176px 21px;
+
+    display:none;
+  }
+  .shopify-payment-button__button[disabled]{
+    opacity: 1.6 !important;
+    color: #fff !important;
+  }
+</style>
+{% if product.type == "Furniture" %}
+{% assign products_type_value =  1 %}
+{% else %}
+{% assign products_type_value =  2 %}
+{% endif %}
+<div class="pincode-check-page">
+  <div id="variant-inventory">
+<!--     <div class="preloader">Loading...</div> -->
+    <label class="no-bold no-caps">
+      <img src="https://cdn.shopify.com/s/files/1/0099/2867/1291/files/Location_red.svg?v=1663746386" alt=" " title=""> 
+      Enter Your Delivery Pincode To Know Delivery Details</label>
+    
+    <div class="zip-input-show pincode-infoss">
+      <input type="text" id="pincode_checker_service" class="input-pincode pincode_ckecker_service number_only"  name="pincode_val" value="{{cart.attributes.pincode}}" placeholder="Enter Pincode"  maxlength="6" minlength="6"/>
+      <input type="hidden" name="product_type" id="product_type" value="{{ products_type_value }}" />
+      <button id="zip-check"  class="zip-check button zip-btn pincode_check"  name="btnIndianZipCode" type="button"><span>GO</span></button>
+    </div>
+    
+    <p class="product_order_text"></p>
+    <div class="pd-deliver-info">
+  	</div>
+  </div>
+</div>
+<style>
+.pincode-infoss button:hover {
+    background: red!important;
+    color: #fff!important;
+}
+</style>
+ 
+<script>
+ 
+$(document).ready(function(){
+  
+   var pincode_val = $("#pincode_checker_service").val();
+    if(pincode_val == '')
+    {
+      
+       //$('.add-to-cart').attr('disabled',true);
+       //$('.product-buy-buttons--root').attr('disabled',true);
+    }else{
+     // $('.add-to-cart').attr('disabled',false);
+     //  $('.product-buy-buttons--root').attr('disabled',false);
+    }
+ });
+
+  $(".number_only").keypress(function(h){if(8!=h.which&&0!=h.which&& 32!=h.which&&(h.which<48||h.which>57))return!1});
+	//alert();
+  function addTOcartDisable1(){ 
+
+    var pincode_val = $(".pincode_ckecker_service").val();
+    if(pincode_val == '')
+    {
+      // $('.hide1').attr('disabled',true);
+      $(".zip-input-show .ErrDiv ").remove();
+      $('.product_order_text').html('');      
+      $('.zip-input-show').append('<div class="ErrDiv">Please Enter Pincode</div>').css("color","red");
+    }
+  }
+  
+  $(".pincode_check").click(function(e) {
+ 
+    $(".zip-input-show .ErrDiv ").remove();
+		$('.preloader').css('display','block');
+      	var url = apiURL + 'api/get-pincodecheckerdata';
+        var pincode = $('.pincode_ckecker_service').val();
+    	console.log("kishu",pincode)
+        var product_type = $('#product_type').val();
+        var numericReg = /^\d*[0-9](|.\d*[0-9]|,\d*[0-9])?$/;  // Number Validation
+        var num6charReg = /^((?!(0))[0-9]{6})$/;  // Number and only ^ Chart
+        var page_type = 'product_detail';
+        var sku = '{{ current_variant.sku }}';
+        
+        var qty = $('.product_quantity').val();
+       
+      	var variant_id = '{{ current_variant.id }}';
+      	var pincode_length = pincode.length;
+
+    	var sku_qty = 0;
+        var sku_available = '';
+    
+    
+    	window._VARIANTS = {};
+        {% for variant in product.variants %}
+        window._VARIANTS[{{ variant.id }}] = [{{ variant.inventory_quantity }}, {{ variant.available }}],
+          {% endfor %}
+
+          $.each(window._VARIANTS, function(j,variantQty){
+          if(j == variant_id){
+            sku_qty = variantQty[0];
+
+            sku_available = variantQty[1];
+
+            return false;
+          }
+        });
+      
+      	if(pincode == '')
+        {
+			$('.preloader').css('display','none');
+        	
+			$('.product_order_text').html('Please enter pincode').css("color","red");
+            $('.add-to-cart').attr('disabled',true);
+            $('.shopify-payment-button__button').attr('disabled',true);
+        }else if(pincode_length != 6)
+        {
+          	$('.preloader').css('display','none');
+        	$('.product_order_text').html('Please enter pincode only 6 digit').css("color","red");
+        }else{
+          e.preventDefault();
+        // console.log("krishna1");
+         	$('.product_order_text').html('');
+            $.ajax({          
+        	url: url,
+        	type: 'POST',
+        	dataType: "json",
+        	data: { pincode : pincode, product_type : product_type,'page_type' : page_type,sku:sku,qty:qty,sku_qty:sku_qty,sku_available:sku_available },
+        	success: function(res){
+             
+              	$('.preloader').css('display','none');
+              	var response_data = res.data;
+           
+              	$('.product_order_text').html('');
+              	$('.pd-deliver-info').css('display','block');
+              	$('.pincode-infoss').hide();
+              	$('.pd-deliver-info').html(res.data);
+              	$('.add-to-cart').attr('disabled',false);
+                $('.shopify-payment-button__button').attr('disabled',false);
+              	if(res.success==false)
+                {
+                  $('.pd-deliver-info').html(res.data);
+                    $(".red_add").show();
+                   $('.product-buy-buttons--root').css('display','none');
+                  $('.product-buy-buttons--root').hide();
+                  return false;
+                }else
+                {
+                  
+                  $('.product_order_text').html('');
+                  $("input.input-pincode.pincode_ckecker_service").val(pincode);
+                  $('.pd-deliver-info').html(res.data)
+                $(".custom_static_action_button").hide();
+                $(".test_add_to_cart").show();
+                $(".red_add").hide();
+                //$('.shopify-payment-button').css('display','inline-block');
+               // $('.shopify-payment-button').show();
+                  $('.product-buy-buttons--root').css('display','inline-block');
+                  $('.product-buy-buttons--root').show();
+                $('.test_add_to_cart').attr('disabled',false);
+                
+                  addPincodeCart(pincode);
+                }
+        	},
+        	error:function(){
+          		console.log('error');
+        	}
+      		});
+      	
+        }
+    });
+  
+  
+  	$(document).ready(function(e){
+      var pincode_val = $('.pincode_ckecker_service').val();
+     
+        if(pincode_val != '')
+        {
+          $('.pincode_ckecker_service').val();
+          setTimeout(function(){  $(".pincode_check").trigger('click') }, 1000);
+        }
+    });
+    
+  	function changetopincode(){
+      	$(".test_add_to_cart").hide();
+      	$(".custom_static_action_button").show();
+        $('.product_order_text').html('');
+        $('.pd-deliver-info').html('');
+        $('.pincode-infoss').show();
+       
+    }
+  
+  	  function addPincodeCart(pincode){
+      $.ajax({
+        type: 'POST',
+        dataType: 'json',
+        async:false,
+        url: '/cart/update.js',
+        data: {
+          attributes: {
+            'pincode':pincode
+          }
+        },
+        success: function(){
+        }
+      });
+    }
+</script>
+<script>
+   $(".zip-check").on('click',function(){
+    // alert("Ashraf")
+    if(pincode == ''){
+      $('.product_order_text').html('Please enter pincode').css("color","red");
+     // alert("Ashraf ka pincode")
+    }
+  });
+</script>

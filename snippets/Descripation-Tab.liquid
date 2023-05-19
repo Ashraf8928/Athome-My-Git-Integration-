@@ -1,0 +1,64 @@
+<div class="product-page--content" style=" padding-left: 0px !important;
+    padding-right: 0px;"><ul class="product_tabs">
+      <li class="tab-link current" data-tab="tab-1">Specifications</li>
+    <li class="tab-link" data-tab="tab-2">Description</li>
+    <li class="tab-link" data-tab="tab-3">Manufacturing Details</li>
+    {%- if product.metafields.product["Care Instructions"] != blank -%}
+      <li class="tab-link" data-tab="tab-4">Care & Instructions</li>
+    {% endif %}
+  </ul>
+
+  
+    
+    <div id="tab-1" class="product_tabs-content current">
+      {% include 'product-Detail-Des' %}
+    </div>
+  
+  <div id="tab-2" class="product_tabs-content">
+    {% assign Description = product.metafields.Product["Description"] %}
+      {%- if Description != blank -%}
+      <p>{{ Description }}</p>
+        {% endif %}
+  </div>
+  
+  <div id="tab-3" class="product_tabs-content">
+    {% assign metafield = product.metafields.Product %}
+    {% if metafield['Metrology_Origin'] != blank %}
+      <div class="meta-field-pdp">
+        {% assign Metrology_Title = product.metafields.Product["Metrology_Title"] %}
+        {% assign Metrology_Address = product.metafields.Product["Metrology_Address"] %}
+        {% assign Metrology_Origin = product.metafields.Product["Metrology_Origin"] %}
+        {% assign Metrology_Country_of_Origin = product.metafields.Product["Metrology_Country of Origin"] %}
+
+
+        {%- if Metrology_Title != blank -%}
+          <p>
+            
+            {{ Metrology_Title }}</p>
+        {%- endif -%}
+        {%- if Metrology_Address != blank -%}
+          <p>
+            
+            {{ Metrology_Address }}</p>
+        {%- endif -%}
+        {%- if Metrology_Origin != blank -%}
+          <p>
+            
+            {{ Metrology_Origin }}</p>
+        {%- endif -%}
+        {%- if Metrology_Country_of_Origin != blank -%}
+          <p>
+            
+            {{ Metrology_Country_of_Origin }}</p>
+        {%- endif -%}
+
+
+      </div>
+    {% endif %}
+  </div>
+  <div id="tab-4" class="product_tabs-content ">
+    {%- if product.metafields.product["Care Instructions"] != blank -%}
+      {{ product.metafields.product["Care Instructions"] }}
+      {% endif %}
+  </div>
+</div>

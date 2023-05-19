@@ -1,0 +1,117 @@
+
+{%- liquid
+  assign bg_color = section.settings.background-color
+  assign enabled = section.settings.enabled
+  assign icon = section.settings.icon
+  assign light_text = section.settings.light-text
+  assign link = section.settings.link
+  assign text = section.settings.text
+
+  assign show_on_page = true
+  if section.settings.home-page-only and template != 'index'
+    assign show_on_page = false
+  endif
+
+  capture link_settings
+    echo settings.color--alternative
+    echo settings.color--accent
+  endcapture
+-%}
+
+{% if enabled and show_on_page %}
+  <div
+    class="announcement--root top-head"
+    data-section-id="{{ section.id }}"
+    data-section-type="announcement"
+    data-background-color="{{ bg_color }}"
+    data-light-text="{{ light_text }}"
+    data-spacing="none"
+  >
+    {% if link != blank %}
+      <a class="announcement--link" href="{{ link }}">
+    {% endif %}
+
+    <div class="announcement--wrapper">
+      {% if icon %}
+        <div class="announcement--icon">
+          {{ icon | img_url: '50x50' | img_tag: icon.alt }}
+        </div>
+      {% endif %}
+
+      {% if text != blank %}
+        <div class="announcement--text" data-item="accent-text">
+          <span class="announcement_text"> {{ text | escape }}</span>
+           <ul class="home-top">
+             {% comment %}<li>{% render 'svg-call.liquid' %} <span><a href="tel:18001211414">1-800-121-1414</a></span></li>{% endcomment %}
+    <li  > {% render 'help-svg.liquid' %} <span><a  onClick="openChat()">Need Assistance</span></a></li>
+             <li> {% render 'locotion-svg.liquid' %}<span><a href="https://www.at-home.co.in/pages/store-locator-new">Store Locator</a></span></li>
+             <li>{% render 'truck-order_svg.liquid' %} <span><a href="https://www.at-home.co.in/pages/track-my-order">Track Order</a></span></li>
+
+</ul>
+        </div>
+      
+      {% endif %}
+    </div>
+
+    {% if link != blank %}
+      </a>
+    {% endif %}
+ 
+    
+  </div>
+{% endif %}
+
+{% schema %}
+{
+  "name": "Announcement bar",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "enabled",
+      "label": "Show announcement",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "home-page-only",
+      "label": "Home page only",
+      "default": true
+    },
+    {
+      "id": "background-color",
+      "label": "Background color",
+      "type": "select",
+      "options": [
+        { "label": "None", "value": "none" },
+        { "label": "Light", "value": "light" },
+        { "label": "Dark", "value": "dark" },
+        { "label": "Accent", "value": "accent" }
+      ],
+      "default": "dark"
+    },
+    {
+      "id": "light-text",
+      "label": "Use light text color",
+      "type": "checkbox",
+      "default": false
+    },
+    {
+      "type": "image_picker",
+      "id": "icon",
+      "label": "Icon image",
+      "info": "50 x 50px recommended"
+    },
+    {
+      "type": "text",
+      "id": "text",
+      "label": "Text",
+      "default": "Announcement for sales, promos, shipping info & more — Click and Collect available"
+    },
+    {
+      "type": "url",
+      "id": "link",
+      "label": "Link"
+    }
+  ]
+}
+{% endschema %}

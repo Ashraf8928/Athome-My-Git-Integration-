@@ -1,0 +1,285 @@
+{%- liquid
+  assign title_t = 'customer.register.page_title' | t
+  assign first_name_t = 'customer.register.first_name' | t
+  assign last_name_t = 'customer.register.last_name' | t
+  assign email_t = 'customer.register.email' | t
+  assign password_t = 'customer.register.password' | t
+  assign submit_t = 'customer.register.submit' | t
+  assign login_t = 'customer.register.login' | t
+-%}
+
+<div
+  class="register_full customer--root"
+  data-section-id="{{ section.id }}"
+>
+  <div class="customer--wrapper">
+    <div class="register_wrap_inner">   
+    <div class="register_left destop_view">  
+    <div id="customer-register" class="customer--register">
+      <h1 data-item="section-heading">
+        {%comment%}{{ title_t }}{%endcomment%} Register
+      </h1>
+
+      {% form 'create_customer' %}
+
+        {{ form.errors | default_errors }}
+
+      <div class="regis_frm_inner">  
+
+       <div class="Left_regist_frm"> 
+
+        <div id="first_name">        
+          <input  tabindex="1" 
+            placeholder="First Name*" 
+            class="text"
+            type="text"
+            value=""
+            name="customer[first_name]"
+            id="first_name"
+            size="30"
+            required
+          />
+        </div>
+        <div id="phone_number" class="clearfix large_form" >
+        	<input  type="phone_number" class="form-control" placeholder="Phone*"  name="customer[phone_number]" 
+                   id="phone_number" class="large" size="30" required tabindex="3" />
+         </div>
+        <div id="password">         
+          <input tabindex="5"
+            placeholder="Password*"  
+            class="password text {% if form.errors contains "password" %} error{% endif %}"
+            id="create_password"
+            type="password"
+            value=""
+            name="customer[password]"
+            id="password"
+            size="30"
+            required
+          />
+        </div>
+
+      </div>
+      
+      <div class="right_regis_frm"> 
+        
+        <div  id="last_name">   
+          <input tabindex="2"
+            placeholder="Last Name*" 
+            class="text"
+            type="text"
+            value=""
+            name="customer[last_name]"
+            id="last_name"
+            size="30"
+            required
+          />
+        </div>
+        <div id="email">         
+          <input tabindex="4"
+            placeholder="Email ID*" 
+            class="text"
+            type="email"
+            value=""
+            name="customer[email]"
+            id="email"
+            size="30"
+            required
+          />
+        </div>
+        <div id="password_confirm_container">
+<!--             <span class="password-match">PASSWORDS DO NOT MATCH</span> -->
+            <input  tabindex="6" type="password" value="" name="customer[password_confirmation]"  
+                   placeholder="Confirm Password*" id="password_confirm" size="30"
+            required/>
+        </div>
+       </div>
+    
+      </div>  
+    </div>  
+
+
+        <div class="account--button-container">
+          <div class="account--create" data-item='button'>
+            <button type="submit" value="{{ submit_t }}" id="p_submit">
+              {%comment%}{{ submit_t }}{%endcomment%} Create Account
+            </button>
+          </div>
+        <!--  <a
+            class="account--login"
+            href="{{ routes.account_login_url }}"
+            data-item="secondary-button"
+          >
+            <div>{{ login_t }}</div>
+          </a> -->
+        </div>
+
+      {% endform %}
+     <div class="sign_with_social">
+      <span class="title_c">or Signup with</span>
+      <div class="sign_ocial_inner">
+      <div class="left_s">
+        <a href="https://facebook.com/login/?privacy_mutation_token=eyJ0eXBlIjowLCJjcmVhdGlvbl90aW1lIjoxNjU3MDA3NDcxLCJjYWxsc2l0ZV9pZCI6MjY5NTQ4NDUzMDcyMDk1MX0%3D"><img src="https://cdn.shopify.com/s/files/1/0099/2867/1291/files/facebook.png?v=1658995827"></a>
+      </div>
+      <div class="right_s">
+        <a href="https://www.google.com/account/about/?hl=en-US"><img src="https://cdn.shopify.com/s/files/1/0099/2867/1291/t/197/assets/google.png?v=1652534924"></a>
+      </div>
+     </div> 
+    </div>      
+    </div>
+        <div class="register_left mobile_view">  
+    <div id="customer-register" class="customer--register">
+      <h1 data-item="section-heading">
+        {%comment%}{{ title_t }}{%endcomment%} Register
+      </h1>
+
+      {% form 'create_customer' %}
+
+        {{ form.errors | default_errors }}
+
+      <div class="regis_frm_inner">  
+
+       <div class="Left_regist_frm"> 
+
+        <div id="first_name">        
+          <input
+            placeholder="First Name*" 
+            class="text"
+            type="text"
+            value=""
+            name="customer[first_name]"
+            id="first_name"
+            size="30"
+            required
+          />
+        </div>
+          <div id="last_name">   
+          <input
+            placeholder="Last Name*" 
+            class="text"
+            type="text"
+            value=""
+            name="customer[last_name]"
+            id="last_name"
+            size="30"
+            required
+          />
+        </div>
+        <div id="phone_number" class="clearfix large_form">
+          <input type="phone_number" class="form-control" placeholder="Phone*"  name="customer[phone_number]" 
+                   id="phone_number" class="large" size="30" required />
+         </div>
+        <div id="email">         
+          <input
+            placeholder="Email ID*" 
+            class="text"
+            type="email"
+            value=""
+            name="customer[email]"
+            id="email"
+            size="30"
+            required
+          />
+        </div>
+       
+
+      </div>
+      
+      <div class="right_regis_frm"> 
+         <div id="password">         
+          <input
+            placeholder="Password*"  
+            class="password text {% if form.errors contains "password" %} error{% endif %}"
+            id="create_password"
+            type="password"
+            value=""
+            name="customer[password]"
+            id="password"
+            size="30"
+            required
+          />
+        </div>
+        
+        <div id="password_confirm_container">
+<!--             <span class="password-match">PASSWORDS DO NOT MATCH</span> -->
+            <input type="password" value="" name="customer[password_confirmation]"  
+                   placeholder="Confirm Password*" id="password_confirm" size="30"
+            required/>
+        </div>
+       </div>
+    
+      </div>  
+    </div>  
+
+
+        <div class="account--button-container">
+          <div class="account--create" data-item='button'>
+            <button type="submit" value="{{ submit_t }}" id="p_submit">
+              {%comment%}{{ submit_t }}{%endcomment%} Create Account
+            </button>
+          </div>
+        <!--  <a
+            class="account--login"
+            href="{{ routes.account_login_url }}"
+            data-item="secondary-button"
+          >
+            <div>{{ login_t }}</div>
+          </a> -->
+        </div>
+
+      {% endform %}
+     <div class="sign_with_social">
+      <span class="title_c">or Signup with</span>
+      <div class="sign_ocial_inner">
+      <div class="left_s">
+        <a href="https://facebook.com/login/?privacy_mutation_token=eyJ0eXBlIjowLCJjcmVhdGlvbl90aW1lIjoxNjU3MDA3NDcxLCJjYWxsc2l0ZV9pZCI6MjY5NTQ4NDUzMDcyMDk1MX0%3D"><img src="https://cdn.shopify.com/s/files/1/0099/2867/1291/files/facebook.png?v=1658995827"></a>
+      </div>
+      <div class="right_s">
+        <a href="https://www.google.com/account/about/?hl=en-US"><img src="https://cdn.shopify.com/s/files/1/0099/2867/1291/t/197/assets/google.png?v=1652534924"></a>
+      </div>
+     </div> 
+    </div>      
+    </div>
+    </div>
+     <div class="register_right">  
+             <img src="https://cdn.shopify.com/s/files/1/0099/2867/1291/files/Sign_up_Bar_Main_Image-535_W_x_490_H.jpg"/>
+     </div>
+  <div>
+  </div>
+</div>
+</div>
+
+<!-- 
+<script>
+ $('form#create_customer').submit(function(e) { 
+    if ( $('#create_password').val() === $('#password_confirm').val()) {
+    //alert('Password Good!!');
+    } else {
+      $('.password-match').fadeIn("slow");
+      
+       alert('Password and confirm password does not match. Please retype!');
+      return false;
+    }
+});
+</script> -->
+<script> 
+$(document).ready(function() {
+    $('#p_submit').click(function(event){
+    
+        data = $('#create_password').val();
+        var len = data.length;
+        
+        if(len < 1) {
+            alert("Password cannot be blank");
+            // Prevent form submission
+            event.preventDefault();
+        }
+         
+        if($('#create_password').val() != $('#password_confirm').val()) {
+            alert("Password and Confirm Password don't match");
+            // Prevent form submission
+            event.preventDefault();
+        }
+         
+    });
+});
+  </script> 

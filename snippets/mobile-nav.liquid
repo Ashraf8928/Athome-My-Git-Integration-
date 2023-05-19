@@ -1,0 +1,91 @@
+<div class="mobile-nav" data-js-class="MobileNav">
+<h1 class="header--logo">
+          <div
+  class="logo--root"
+  data-type="image"
+  itemscope
+  itemtype="https://schema.org/Organization"
+>
+  <a class="logo--wrapper" href="/" title="Nilkamal At-home @home" itemprop="url">
+    
+      <img class="lazyload"
+        data-src="//cdn.shopify.com/s/files/1/0099/2867/1291/files/home_Logo_600x200.webp?v=1652264327"
+        alt="Nilkamal At-home @home"
+        itemprop="logo"
+        width="174"
+      >
+    
+  </a>
+</div>
+        </h1>
+<div class="header--search-middle mobile_search">
+         <div class="search--bar">
+           <form class="search test" action="/search">
+            <input type="text" placeholder="What are you looking for" name="q" value="{{ search.terms | escape }}"  />
+            <input type="submit" value="search" />
+        </form>
+          </div>
+  
+  <div class="mobile-nav--header">
+  {% comment %}<form class="search" action="/search">
+          <input type="text" placeholder="What are you looking for" name="q" value="{{ search.terms | escape }}"  />
+          <input type="submit" value="Search" />
+      	</form>
+    {% if settings.search--show-in-header %}
+      <div class="mobile-nav--search" data-item="accent-text">
+        <a href="{{ routes.search_url }}">{{ 'general.search.search' | t }}</a>
+      </div>
+    {% endif %}
+    {% endcomment %}
+
+    <div class="mobile-nav--login" data-item="accent-text">
+      {% render 'login' %}
+    </div>
+  </div>
+
+  <div class="mobile-nav--menu" data-item="accent-text">
+    {% comment %} Copied from header {% endcomment %}
+  </div>
+
+  {% if settings.popup--enabled %}
+    {% if settings.popup--newsletter--enabled %}
+      <div class="mobile-nav--newsletter">
+        {% render 'mailing-list' %}
+      </div>
+    {% endif %}
+    {% if settings.popup--social-icons--enabled %}
+      <div class="mobile-nav--social">
+        {% render 'social-share', view: 'modal' %}
+      </div>
+    {% endif %}
+  {% endif %}
+<style>
+  .mobile-nav h1.header--logo {
+    text-align: -webkit-center!important;
+    padding-top: 22px;
+    padding-bottom: 20px;
+    padding-left: 22px;
+}
+.mobile_search{
+  padding-right: 15px;
+padding-left: 15px;}
+  .y-menu--level-1--link {
+    border-bottom: none;
+}
+  .y-menu--level-2--link {
+    border-bottom: none;
+}
+  .y-menu--parent-link {
+    display: block;
+    border-bottom: none;
+}
+  .y-menu--back-link {
+    border-top: none;
+    border-bottom: none;
+
+}
+  .y-menu--level-1--link:first-child {
+    border-top: none;
+}
+</style>
+</div>

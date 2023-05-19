@@ -1,0 +1,769 @@
+{%- liquid
+  assign product_media_t = 'products.product_media' | t
+  assign image_modal_t = 'products.image_modal' | t
+
+  assign current_variant = product.selected_or_first_available_variant
+  assign featured_media = current_variant.featured_media | default: product.featured_media
+  assign hide_variant_media = section.settings.hide-variant-media
+  assign load_model = false
+  assign load_video = false
+  assign modal_enabled = section.settings.modal-enabled
+  assign move_to_next_container = false
+  assign featured_blocks = false
+  assign product_id = product.id | append: '-' | append: section.id
+  assign video_looping_enabled = section.settings.loop-enabled
+
+  capture variant_media_ids
+    for variant in product.variants
+      echo '"' | append: variant.featured_media.id | append: '",'
+    endfor
+  endcapture
+  assign variant_media_ids = variant_media_ids | split: ','
+-%}
+
+
+{% for media in product.media %}
+  {%- liquid
+    if media.media_type == "model"
+      assign load_model = true
+    elsif media.media_type == "video" or media.media_type == "external_video"
+      assign load_video = true
+    endif
+  -%}
+
+  {% if modal_enabled %}
+    {%- capture modal_media -%}
+      {{ modal_media }}
+
+      {% if media.media_type == "image" %}
+        <div class="modal--content">
+          <div class="product-page--modal-image" data-id="{{ media.id }}">
+            {% render 'image', image: media %}
+          </div>
+        </div>
+      {% endif %}
+    {%- endcapture -%}
+  {% endif %}
+
+  {%- capture variant_media -%}
+    {%- liquid
+      echo variant_media
+
+      if media == featured_media
+        continue
+      endif
+
+      capture media_id
+        echo '"' | append: media.id | append: '"'
+      endcapture
+    -%}
+
+    {% if hide_variant_media and variant_media_ids contains media_id %}
+      <a class="product-page--hidden-variant" aria-label="{{ product_media_t }}" data-mq="none">
+        {%
+           render "product--media",
+           media_view: "featured"
+           , product_media: media
+           , inside_carousel: false
+           , video_looping_enabled: video_looping_enabled
+        %}
+      </a>
+
+      {% continue %}
+    {% endif %}
+
+    <div class="product-page--media-variant">
+      {% if modal_enabled and media.media_type == 'image' %}
+        <a class="modal--link" tabindex="0" aria-label="{{ product_media_t }}">
+        {% endif %}
+
+        {%
+           render "product--media",
+           media_view: "featured"
+           , product_media: media
+           , inside_carousel: false
+           , video_looping_enabled: video_looping_enabled
+        %}
+
+        {% if modal_enabled and media.media_type == 'image' %}
+        </a>
+      {% endif %}
+    </div>
+  {%- endcapture -%}
+{% endfor %}
+
+{%- for block in section.blocks -%}
+  {%- liquid
+    if block.type == 'divider'
+      assign move_to_next_container = true
+      continue
+    endif
+  -%}
+
+  {%- capture block_html -%}
+    <div class="product-page--block" data-product-block data-block-type="{{ block.type }}" {{ block.shopify_attributes }}>
+      {%- case block.type -%}
+
+        {%- when 'overline' -%}
+          <div class="product-page--overline" data-item="overline">
+            {{ block.settings.text }}
+          </div>
+
+        {%- when 'heading' -%}
+          <h1 class="product-page--heading" data-item="section-heading">
+            {{ product.title }}
+          </h1>
+          <div class="wishlist-icon">
+            <ul>
+              <li>{% include 'iwish_v2' with 'iwishproduct' %}</li>
+              <li class="sharepoint">
+                <a>{%  render 'sharing-svg-icon.liquid' %}
+                </a>
+                {% render 'social-sharing', share_title: product.title, share_permalink: product.url, share_image: product %}
+              </li>
+        <li class="share_mob" id="shareBtn">
+                <?xml version="1.0" encoding="UTF-8"?>
+                  <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+                  <!-- Creator: CorelDRAW 2020 -->
+                  <svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" width="25" height="30" version="1.1" style="shape-rendering:geometricPrecision; text-rendering:geometricPrecision; image-rendering:optimizeQuality; fill-rule:evenodd; clip-rule:evenodd"
+                  viewBox="0 0 16044.63 16044.63"
+                   xmlns:xlink="http://www.w3.org/1999/xlink"
+                   xmlns:xodm="http://www.corel.com/coreldraw/odm/2003">
+                   <defs>
+                    <style type="text/css">
+                     <![CDATA[
+                      .fil0 {fill:none}
+                      .fil1 {fill:black;fill-rule:nonzero}
+                     ]]>
+                    </style>
+                   </defs>
+                   <g id="Layer_x0020_1">
+                    <metadata id="CorelCorpID_0Corel-Layer"/>
+                    <g id="_-1294975816">
+                     <rect class="fil0" x="-0.01" y="-0" width="16044.63" height="16044.63"/>
+                     <g>
+                      <path class="fil1" d="M8022.3 484.18c2081.52,0 3966.04,843.76 5330.18,2207.88 1364.14,1364.14 2207.94,3248.71 2207.94,5330.24 0,2081.45 -843.8,3966.1 -2207.94,5330.18 -1364.08,1364.14 -3248.73,2207.94 -5330.18,2207.94 -2081.52,0 -3966.1,-843.8 -5330.24,-2207.94 -1364.12,-1364.14 -2207.88,-3248.66 -2207.88,-5330.18 0,-2081.52 843.8,-3966.1 2207.88,-5330.24 1364.14,-1364.08 3248.71,-2207.88 5330.24,-2207.88zm4729.17 2808.91c-1210.23,-1210.24 -2882.27,-1958.82 -4729.17,-1958.82 -1846.86,0 -3518.95,748.58 -4729.21,1958.82 -1210.24,1210.26 -1958.82,2882.35 -1958.82,4729.21 0,1846.9 748.58,3518.95 1958.82,4729.17 1210.26,1210.28 2882.31,1958.86 4729.21,1958.86 1846.9,0 3518.95,-748.58 4729.17,-1958.86 1210.28,-1210.23 1958.86,-2882.27 1958.86,-4729.17 0,-1846.9 -748.58,-3518.95 -1958.86,-4729.21z"/>
+                      <path class="fil1" d="M4411.18 8022.3c0,702.89 571.75,1274.47 1274.49,1274.47 337.24,0 642.25,-133.52 870.46,-348.44l2544.92 1455.04c-7.47,55.11 -16.58,110.37 -16.58,168.03 0,702.87 571.73,1274.47 1274.47,1274.47 702.43,0 1274.49,-571.75 1274.49,-1274.47 0,-702.74 -572.21,-1274.49 -1274.49,-1274.49 -337.7,0 -642.68,133.98 -870.9,348.46l-2544.92 -1454.15c7.47,-56 17.02,-111.12 17.02,-168.92 0,-57.8 -9.55,-112.91 -17.02,-168.47l2544.92 -1454.61c228.22,214.93 533.05,348.46 870.9,348.46 702.43,0 1274.49,-571.75 1274.49,-1274.49 0,-702.72 -572.05,-1274.47 -1274.49,-1274.47 -702.87,0 -1274.47,571.75 -1274.47,1274.47 0,57.67 9.12,112.93 16.58,168.92l-2544.92 1454.15c-228.22,-214.48 -533.07,-348.44 -870.46,-348.44 -702.74,0 -1274.49,571.58 -1274.49,1274.47z"/>
+                     </g>
+                    </g>
+                   </g>
+                  </svg>
+
+              </li>
+            </ul>
+          </div>
+
+<script>
+          document.querySelector('#shareBtn')
+          .addEventListener('click', event => {
+
+              // Fallback, Tries to use API only
+              // if navigator.share function is
+              // available
+              if (navigator.share) {
+                  navigator.share({
+
+                      // Title that occurs over
+                      // web share dialog
+                      title: '{{ product.title }}',
+
+                      // URL to share
+                      url: '#'
+                  }).then(() => {
+                      console.log('Thanks for sharing!');
+                  }).catch(err => {
+
+                      // Handle errors, if occured
+                      console.log(
+                      "Error while using Web share API:");
+                      console.log(err);
+                  });
+              } else {
+
+                  // Alerts user if API not available
+                  alert("Browser doesn't support this API !");
+              }
+          })
+          </script>
+
+          {% render 'judgeme_widgets', widget_type: 'judgeme_preview_badge', jm_style: '', concierge_install: true, product: product %}
+        {%- when 'vendor' -%}
+          <div class="product-page--vendor" data-item="light-accent-text" itemprop="brand" content="{{ product.vendor }}">
+            <a href="{{ product.vendor | url_for_vendor }}">
+              {{ product.vendor }}
+            </a>
+          </div>
+
+        {%- when 'price' -%}
+          {%- render 'product-price', product: product, id: product_id -%}
+          <div id="razorpay-affordability-widget"> </div>
+        <div id="w369-widget-control"></div>
+        <p class="offer">{% comment %}Cashback of 10% upto Rs.1000 on Axio pay later{% endcomment %}</p>
+
+          {% if  product.title == 'At-home Gift Card'  %}
+            {% include "pincodechecker" %}
+            {% else %}
+              {%- render 'offers-avail', product: product, id: product_id -%}
+
+              {% include "pincodechecker" %}
+          {% endif %}
+{% comment %}
+        <h5><b>The Big Sale - Use EOSS10 to get extra 10% off</b></h5>
+   {% endcomment %}
+        {%- when 'low-stock' -%}
+          {%
+             render 'product-low-stock',
+             id: product_id
+             , current_variant: current_variant
+             , threshold: block.settings.threshold
+          %}
+
+        {%- when 'options' -%}
+          {%-
+            render "product-options",
+            id: product_id
+            , product: product
+            , block_settings: block.settings
+          -%}
+
+        {%- when 'quantity-input' -%}
+
+        {%- when 'buy-buttons' -%}
+          {%- render 'product-quantity', id: product_id -%}
+          {%-
+            render 'product-buy-buttons',
+            id: product_id
+            , product: product
+            , smart_payment_enabled: block.settings.smart-payment-enabled
+          -%}
+          {% include 'Descripation-Tab'%}
+        {%- when 'unava{%- render 'product-quantity', id: product_id -%}ilable-form' -%}
+          {%- render 'product-unavailable-form', product: product, id: product_id -%}
+
+        {%- when 'pickup' -%}
+          {% if  product.title == 'At-home Gift Card'  %}
+            {% else %}
+              {%- render 'product-pickup', product: product, id: product_id -%}{% endif %}
+
+        {%- when 'description' -%}
+          {%- unless product.description == blank -%}
+            <div class="product-page--description" data-item="rte-content" itemprop="description">
+              {{ product.description }}
+            </div>
+          {%- endunless -%}
+
+        {%- when 'collapsible-tab' -%}
+          {%- render 'collapsible-tab', block: block -%}
+
+        {%- when 'rating' -%}
+          {%- render 'product-rating' -%}
+
+
+
+        {%- when 'liquid' -%}
+          {{- block.settings.custom-liquid -}}
+
+        {%- when '@app' -%}
+          {%- render block -%}
+
+
+          <div class="mobile1">
+            {%- comment -%}BOUGHT TOGETHER{%- endcomment -%}
+            {%- render 'bought_together' -%}
+            {%- comment -%}ENDBOUGHT TOGETHER{%- endcomment -%}
+          </div>
+          <div class="patra mobile1"><img src="https://cdn.shopify.com/s/files/1/0099/2867/1291/files/icons8-info11.svg?v=1663748500" alt="">
+            <span>
+              <p class="bottom-para">The color of the product may vary slightly compared to the picture displayed on your screen. This is due to lighting, pixel quality and color settings. Please expect an unevenness of up to 5-10 mm in the
+                product due to differences in surfaces and floor levels.</span>
+              {% comment %}{{ section.settings.product-detail-excerpt }}{% endcomment %}
+            </p>
+          </div>
+          <div class="customer-services pdp-customer-services col-sm-12 mobile1">
+            {% if product.tags contains 'New_HH' %}
+            <div class="product-services-slider">
+              <div><img src="https://cdn.shopify.com/s/files/1/0099/2867/1291/files/Free_shipping.svg?v=1663747151"><h3>*Free Shipping</h3>
+              </div>
+              <div><img src="https://cdn.shopify.com/s/files/1/0099/2867/1291/files/Free_assembly.svg?v=1663747152"><h3>Free Assembly</h3>
+              </div>
+            </div>
+            {% else %}
+            <div class="product-services-slider">
+              <div><img src="https://cdn.shopify.com/s/files/1/0099/2867/1291/files/Warranty.svg?v=1663746859"><h3>1 Year Warranty</h3>
+              </div>
+              <div><img src="https://cdn.shopify.com/s/files/1/0099/2867/1291/files/Free_shipping.svg?v=1663747151"><h3>*Free Shipping</h3>
+              </div>
+              <div><img src="https://cdn.shopify.com/s/files/1/0099/2867/1291/files/Free_assembly.svg?v=1663747152"><h3>Free Assembly</h3>
+              </div>
+            </div>
+            {% endif %}
+          </div>
+
+      {%- endcase -%}
+    </div>
+  {%- endcapture -%}
+
+  {%- liquid
+    unless move_to_next_container
+      assign featured_blocks = true
+      capture featured_blocks_html
+        echo featured_blocks_html
+        echo block_html
+      endcapture
+    else
+      capture content_blocks
+        echo content_blocks
+        echo block_html
+      endcapture
+    endunless
+  -%}
+{%- endfor -%}
+
+<product-root class="product-page--root" data-featured-blocks="{{ featured_blocks }}" data-section-id="{{ section.id }}" data-section-type="product_page" data-spacing="none" data-product-id="{{ product_id }}" data-handle="{{ product.handle }}">
+  {% if modal_enabled %}
+    <modal-root class="modal--root" data-modal-view="product-media">
+    {% endif %}
+
+    <div class="product-page--top-panel">
+      {%- if featured_blocks -%}
+        <div class="product-page--panel-wrapper">
+        {%- endif -%}
+
+        <div class="product-page--featured-media">
+
+        {% comment %} Tags on product pages start {% endcomment %}
+        {% if product.tags contains 'pfs:label-Online-Exclusive' %}
+        <div class="blinking-background">ONLINE EXCLUSIVE</div>
+        {% endif %}
+        {% if product.tags contains 'pfs:label-Best-Seller' %}
+        <div class="best_seller-background">BEST SELLER</div>
+        {% endif %}
+        {% if product.tags contains 'pfs:label-New-Launch' %}
+        <div class="new_launch-background">NEW LAUNCH</div>
+        {% endif %}
+        {% comment %} Tags on product pages end {% endcomment %}
+
+          {% render 'product-slider'%}
+
+          {%comment%}
+            {% if modal_enabled and featured_media.media_type == 'image' %}
+            <a class="modal--link" href="#" aria-label="{{ image_modal_t }}">
+            {% endif %}
+
+            {%- liquid
+            if featured_media
+            render "product--media", media_view: "featured", inside_carousel: false, product_media: featured_media, video_looping_enabled: video_looping_enabled
+            else
+            render 'placeholder', type: 'product', aspect_ratio: 1, placeholder_index: 1
+            endif
+            %}
+
+            {% if modal_enabled and featured_media.media_type == 'image' %}
+            </a>
+            {% endif %}
+          {%endcomment%}
+          <div class="customer-services pdp-customer-services col-sm-12 desktop1">
+            {% if product.tags contains 'New_HH' %}
+<!--             <div class="product-services-slider">
+              <div><img src="https://cdn.shopify.com/s/files/1/0099/2867/1291/files/Free_shipping.svg?v=1663747151"><h3>*Free Shipping</h3>
+              </div>
+              <div><img src="https://cdn.shopify.com/s/files/1/0099/2867/1291/files/Free_assembly.svg?v=1663747152"><h3>Free Assembly</h3>
+              </div>
+            </div> -->
+            {% else %}
+            <div class="product-services-slider">
+              <div><img src="https://cdn.shopify.com/s/files/1/0099/2867/1291/files/Warranty.svg?v=1663746859"><h3>1 Year Warranty</h3>
+              </div>
+              <div><img src="https://cdn.shopify.com/s/files/1/0099/2867/1291/files/Free_shipping.svg?v=1663747151"><h3>*Free Shipping</h3>
+              </div>
+              <div><img src="https://cdn.shopify.com/s/files/1/0099/2867/1291/files/Free_assembly.svg?v=1663747152"><h3>Free Assembly</h3>
+              </div>
+            </div>
+            {% endif %}
+          </div>
+          <p class="bottom-para desktop1"><img src="https://cdn.shopify.com/s/files/1/0099/2867/1291/files/icons8-info11.svg?v=1663748500" alt="">
+            <span>The color of the product may vary slightly compared to the picture displayed on your screen. This is due to lighting, pixel quality and color settings. Please expect an unevenness of up to 5-10 mm in the
+              product due to differences in surfaces and floor levels.</span>
+            {% comment %}{{ section.settings.product-detail-excerpt }}{% endcomment %}
+          </p>
+          <div class="desktop1">
+            {%- comment -%}BOUGHT TOGETHER{%- endcomment -%}
+            {%- render 'bought_together' -%}
+            {%- comment -%}ENDBOUGHT TOGETHER{%- endcomment -%}
+          </div>
+        </div>
+
+        {%- if featured_blocks -%}
+          <div class="product-page--featured-blocks">
+            {{ featured_blocks_html }}
+          </div>
+        </div>
+      {%- endif -%}
+      <div class="gloabl-iWishLoginMsg"></div>
+    </div>
+
+    <script>
+      $('document').ready(function() {
+        $('.qtybox .btnqty').on('click', function() {
+          var qty = parseInt($(this).parent('.qtybox').find('.quantity-input').val());
+          if ($(this).hasClass('qtyplus')) {
+            qty++;
+          } else {
+            if (qty > 1) {
+              qty--;
+            }
+          } qty = (isNaN(qty))
+            ? 1
+            : qty;
+          $(this).parent('.qtybox').find('.quantity-input').val(qty);
+        });
+        $('.radios--main .radios--input').click(function() {
+          var val = $(this).val();
+          var img_src = $('.color-' + val).attr('src');
+          $('.color-thumb-' + val).parents('.slick-slide').trigger('click');
+        });
+      });
+    </script>
+
+    {% if modal_enabled %}
+      <div class="product-page--modal-wrapper">
+        {{ modal_media }}
+      </div>
+    </modal-root>
+  {% endif %}
+</product-root>
+<div class="sticky__bottom_bar">
+  <div class="bottom__bar">
+    <div class="bottom_bar_image_box">
+      <img src="{{ product.featured_image | img_url: "100x"  }}">
+      <h3>{{ product.title }}</h3>
+    </div>
+    <div class="bottom_bar_varient">
+      <span class="radios--option-current"></span>
+    </div>
+    <div class="price_btn">
+      <div class="price">
+        <span>MRP {{ current_variant.compare_at_price | money }}</span>
+        <span>₹ {{ current_variant.price | money_without_currency }}</span>
+      </div>
+      {% render 'product-buy-buttons2',
+            id: product_id
+            , product: product
+            , smart_payment_enabled: block.settings.smart-payment-enabled
+          -%}
+    </div>
+  </div>
+</div>
+
+<script>
+  $(window).scroll(function(event) {
+    var height = $(window).height();
+    var scroll = $(window).scrollTop();
+
+// console.log(scroll + " " + height);
+    if (scroll > height) {
+      $(".sticky__bottom_bar").addClass("show");
+    } else {
+      $(".sticky__bottom_bar").removeClass("show");
+    }
+  });
+</script>
+<script>
+  var ashraf = $('.radios--input').val();
+  console.log(ashraf)
+</script>
+{%
+   render "product--scripts",
+ product: product
+ , id: product_id
+ , load_model: load_model
+ , load_video: load_video %}
+{% comment %}{% render 'judgeme_widgets', widget_type: 'judgeme_review_widget', concierge_install: true, product: product %}{% endcomment %}
+{% render 'product-schema', product: product %}
+
+{% schema %}
+  {
+    "name": "Product page",
+    "class": "Product_red",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Media"
+      },
+      {
+        "type": "paragraph",
+        "content": "Learn more about [media types](https://help.shopify.com/en/manual/products/product-media)."
+      },
+      {
+        "type": "checkbox",
+        "id": "modal-enabled",
+        "label": "Enable modal popup",
+        "default": true,
+        "info": "Opens when clicking a product image"
+      },
+      {
+        "type": "checkbox",
+        "id": "hide-variant-media",
+        "label": "Hide variant media",
+        "default": false
+      }, {
+        "type": "checkbox",
+        "id": "loop-enabled",
+        "label": "Enable video looping",
+        "default": false
+      }
+    ],
+    "blocks": [
+      {
+        "type": "overline",
+        "name": "Overline text",
+        "limit": 1,
+        "settings": [
+          {
+            "label": "Overline text",
+            "id": "text",
+            "type": "text",
+            "default": "Overline text"
+          }
+        ]
+      },
+      {
+        "type": "heading",
+        "name": "Heading",
+        "limit": 1,
+        "settings": []
+      },
+      {
+        "type": "vendor",
+        "name": "Vendor",
+        "limit": 1,
+        "settings": []
+      },
+      {
+        "type": "price",
+        "name": "Price",
+        "limit": 1,
+        "settings": []
+      }, {
+        "type": "quantity-input",
+        "name": "Quantity input",
+        "limit": 1,
+        "settings": []
+      }, {
+        "type": "low-stock",
+        "name": "Low stock notice",
+        "limit": 1,
+        "settings": [
+          {
+            "label": "Show low in stock notice when quantity is",
+            "id": "threshold",
+            "type": "range",
+            "min": 0,
+            "max": 10,
+            "step": 1,
+            "default": 5,
+            "info": "Set to 0 to disable this feature. Updated for each variant."
+          }
+        ]
+      }, {
+        "type": "options",
+        "name": "Variant picker",
+        "limit": 1,
+        "settings": [
+          {
+            "type": "select",
+            "id": "variant-style",
+            "label": "Product variant style",
+            "options": [
+              {
+                "label": "Dropdowns",
+                "value": "dropdowns"
+              }, {
+                "label": "Buttons",
+                "value": "buttons"
+              }
+            ],
+            "default": "buttons"
+          },
+          {
+            "type": "checkbox",
+            "id": "swatches-enabled",
+            "label": "Enable color swatches",
+            "default": true,
+            "info": "Automatically turn color options into swatches. [Learn more](https://support.troopthemes.com/guide/color-swatch-guide)"
+          },
+          {
+            "type": "header",
+            "content": "Size chart"
+          },
+          {
+            "type": "checkbox",
+            "id": "size-chart-enabled",
+            "label": "Enable",
+            "default": true
+          }, {
+            "type": "text",
+            "id": "size-chart-option",
+            "label": "Link from option",
+            "default": "size"
+          }, {
+            "type": "page",
+            "id": "size-chart-content",
+            "label": "Page content"
+          }
+        ]
+      }, {
+        "type": "buy-buttons",
+        "name": "Buy buttons",
+        "limit": 1,
+        "settings": [
+          {
+            "type": "checkbox",
+            "id": "smart-payment-enabled",
+            "label": "Show dynamic checkout button",
+            "info": "Lets customers check out directly using a familiar payment method. [Learn more](https://help.shopify.com/manual/using-themes/change-the-layout/dynamic-checkout)",
+            "default": true
+          }
+        ]
+      }, {
+        "type": "unavailable-form",
+        "name": "Unavailable form",
+        "limit": 1,
+        "settings": []
+      }, {
+        "type": "pickup",
+        "name": "Pickup availability",
+        "limit": 1,
+        "settings": []
+      }, {
+        "type": "divider",
+        "name": "Featured content divider",
+        "limit": 1,
+        "settings": []
+      }, {
+        "type": "description",
+        "name": "Description",
+        "limit": 1,
+        "settings": []
+      }, {
+        "type": "collapsible-tab",
+        "name": "Collapsible tab",
+        "settings": [
+          {
+            "id": "heading",
+            "label": "Heading",
+            "type": "text",
+            "default": "Collapsible tab"
+          }, {
+            "type": "richtext",
+            "id": "description",
+            "label": "Text",
+            "default": "<p>Use tabs to highlight unique features, <br/>sizing information, <br/>or other sales information.</p>",
+            "info": "You can use product metafields to assign content to this tab that is unique to an individual product. Learn more about [metafields](https://help.shopify.com/en/manual/metafields/displaying-metafields-on-your-online-store)."
+          }, {
+            "type": "page",
+            "id": "page-content",
+            "label": "Tab content from page"
+          }
+        ]
+      }, {
+        "type": "rating",
+        "name": "Product rating",
+        "limit": 1
+      }, {
+        "type": "liquid",
+        "name": "Custom liquid",
+        "settings": [
+          {
+            "type": "liquid",
+            "id": "custom-liquid",
+            "label": "Custom Liquid",
+            "info": "Add app snippets or other Liquid code to create advanced customizations."
+          }
+        ]
+      }, {
+        "type": "@app"
+      }
+    ]
+  }
+{% endschema %}
+<style>
+  .container {
+    width: 800px;
+    margin: 0 auto;
+  }
+
+
+
+  ul.product_tabs {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  ul.product_tabs li {
+    background: none;
+    color: #222;
+    display: inline-block;
+    padding: 10px 15px;
+    cursor: pointer;
+  }
+
+  ul.product_tabs li.current {
+    background: #ededed;
+    color: #222;
+  }
+
+  .product_tabs-content {
+    display: none;
+    background: #ededed;
+    padding: 15px;
+  }
+
+  .product_tabs-content.current {
+    display: inherit;
+  }
+
+  li.sharepoint {
+      display: block;
+    }
+    li#shareBtn {
+      display: none;
+    }
+
+  @media only screen and (max-width: 600px) {
+    li.sharepoint {
+      display: none;
+    }
+    li#shareBtn {
+      display: block;
+    }
+  }
+</style>
+{% comment %} ======== admitad-retag ======== {% endcomment %}
+{% comment %} ======== Level 3. Product page ======== {% endcomment %}
+<script type="text/javascript">
+    // required object
+    window.ad_product = {
+        "id": "{{ product.id }}",   // required
+        "vendor": "{{ product.vendor }}",
+        "price": "{{ product.price | divided_by: 100.00 }}",
+        "url": "{{ shop.url | append: product.url }}",
+        "picture": "https:{{ product | img_url }}",
+        "name": "{{ product.title }}",
+        "category": "{{ collection.id }}"
+    };
+
+    console.log("admitad-retag",window.ad_product);
+    window._retag = window._retag || [];
+    window._retag.push({code: "9ce8884b36", level: 2});
+    (function () {
+        var id = "admitad-retag";
+        if (document.getElementById(id)) {return;}
+        var s = document.createElement("script");
+        s.async = true; s.id = id;
+        var r = (new Date).getDate();
+        s.src = (document.location.protocol == "https:" ? "https:" : "http:") + "//cdn.lenmit.com/static/js/retag.js?r="+r;
+        var a = document.getElementsByTagName("script")[0]
+        a.parentNode.insertBefore(s, a);
+    })()
+</script>

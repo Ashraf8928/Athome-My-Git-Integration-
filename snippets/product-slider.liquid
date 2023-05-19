@@ -1,0 +1,62 @@
+<div class="row">
+  <div class="column js">
+    <div class="slider-single">
+      {% for media in product.media %}
+        {% case media.media_type %}
+          {% when 'model' %}
+            <div class="product-single__media" style="padding-top: 20%" data-media-id="{{ media.id }}">
+              {{ media | model_viewer_tag }}
+            </div>
+            <button data-shopify-xr data-shopify-model3d-id="{{ media.id }}" data-shopify-title="{{ product.title | escape }}" data-shopify-xr-hidden/>
+          {% else %}
+            {% assign img_url_full = media | img_url: 'master' %}
+            <img class="image-zoom lazyautosizes lazyloaded color-{{media.alt}}" src="{{img_url_full}}" data-sizes="auto" data-widths="[295,394,590]" alt="{{media.alt}}" data-srcset="{{img_url_full}}" data-zoom="{{ media | img_url: '1200x' }}">
+        {% endcase %}
+      {% endfor %}
+    </div>
+
+    <div class="slider-nav">
+      {% for media in product.media %}
+        {% assign img_url_full = media | img_url: 'master' %}
+        <img class="lazyautosizes lazyloaded color-thumb-{{media.alt}}" src="{{img_url_full}}" data-sizes="auto" data-widths="[295,394,590]" alt="{{media.alt}}" data-srcset="{{img_url_full}}">
+      {% endfor %}
+    </div>
+  </div>
+</div>
+<script>
+  function setupShopifyXr() {
+    if (!window.ShopifyXR) {
+      document.addEventListener('shopify_xr_initialized', function() {
+        setupShopifyXr();
+      });
+    } else {
+      window.ShopifyXR.addModels();
+      window.ShopifyXR.setupXRElements();
+    }
+  }
+
+  window.Shopify.loadFeatures([{
+      name: 'shopify-xr',
+      version: '1.0',
+      onLoad: setupShopifyXr
+    }]);
+    $(document).ready(function(){$(".image-zoom").wrap('<span style="display:inline-block"></span>').css("display","block").parent().zoom({url:$(this).find("img").attr("data-zoom")})});
+</script>
+<style>
+
+  .js .slider-single > div:nth-child(1n + 2) {
+    display: none
+  }
+
+  .js .slider-single.slick-initialized > div:nth-child(1n + 2) {
+    display: block
+  }
+
+  .slider-nav .slick-slide {
+    cursor: pointer;
+  }
+  .product-single__media model-viewer {
+    width: 900px;
+    height: 450px;
+  }
+</style>

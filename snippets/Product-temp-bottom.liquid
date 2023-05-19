@@ -1,0 +1,155 @@
+<div class="product_sticky_container footer_sticy_btm container">
+  <div class="container-fluid">
+<div class="product_prp">
+ <div class="sticky_img_section resss">
+                         {% for media in product.media %}
+                        {% if forloop.index == 1 %}
+                        {% assign img_url_full = media | img_url: 'master' %}
+                        <div class="image_boottom"><img class="lazyautosizes lazyloaded color-{{media.alt}}" src="{{img_url_full}}" data-sizes="auto" data-widths="[295,394,590]" alt="{{media.alt}}" data-srcset="{{img_url_full}}">
+                        </div> {% endif %}
+                        {% endfor %}</div>
+                   <div class="heading_bottom"> <h2 class="pdp_title primary_color ">{{ product.title }}</h2></div>                                    
+                                      <div class="varaint_selection trueVar">
+                                      <div class="primary_color selected_var">{%-
+                                          render "product-option-sticy",
+                                          id: product_id,
+                                          product: product,
+                                          block_settings: block.settings
+                                        -%}</div> 
+                                      <div class="primary_color  deskVPrice"> {{ product.price | money }}</div>
+                                    </div>
+ <div class="custom_btn  red_add aaat-to-bag">
+      <div class="product-buy-buttons--primary btn_50 flot" data-enabled="true" data-item="secondary-button" data-loading="false">
+        <a href="#variant-inventory" id="hide1" class="product-buy-buttons--cta add-to-cart zip-check button zip-btn btn " onclick="return addTOcartDisable1();">
+          Add to Cart
+          <span class="product-buy-buttons--spinner">
+          </span>
+        </a>
+      </div>
+    {% comment %} <div class="product-buy-buttons--primary btn_50 let" data-enabled="true" data-item="secondary-button" data-loading="false">
+        <button id="hide2" class="product-buy-buttons--cta add-to-cart zip-check button zip-btn " onclick="return addTOcartDisable1();">
+          <span class="product-buy-buttons--cta-text">Buy Now</span>
+          <span class="product-buy-buttons--spinner">
+          </span>
+        </button>
+      </div>
+      {% endcomment %}
+    </div>
+{%- liquid
+  assign add_to_cart_t = 'products.add_to_cart' | t
+  assign out_of_stock_t = 'products.out_of_stock' | t
+
+  assign current_variant = product.selected_or_first_available_variant
+%}
+
+<product-buy-buttons-root
+  class="product-buy-buttons--root"
+  data-id="{{ id }}"
+  style="display:none;"
+  id="myDIV"
+>
+  {% form 'product', product, class: 'product-buy-buttons--form', id: id %}
+    {{- form | payment_terms -}}
+
+    {% if request.page_type != "password" %}
+      <div class="product-buy-buttons--primary btn_50"
+        data-enabled="true"
+        {% if smart_payment_enabled and product.selling_plan_groups == empty %}
+          data-item='secondary-button'
+        {% else %}
+          data-item='button'
+        {% endif %}
+      >
+        <button
+          class="product-buy-buttons--cta add-to-cart"
+          {%- unless current_variant.available -%}
+            disabled
+          {%- endunless -%}
+        >
+          <span class="product-buy-buttons--cta-text">
+            {%- liquid
+              if current_variant.available
+                echo add_to_cart_t
+              else
+                echo out_of_stock_t
+              endif
+            -%}
+          </span>
+          <span class="product-buy-buttons--spinner">
+            {% render 'loading-spinner', size: '41px' %}
+          </span>
+        </button>
+      </div>
+
+      {% if smart_payment_enabled and product.available and product.selling_plan_groups == empty %}
+        <div
+          class="product-buy-buttons--smart buy-now btn_50"
+          {%- unless current_variant.available -%}
+            style="display:none;"
+          {%- endunless -%}
+        >
+<!--           {{- form | payment_button -}} -->
+          <!--  Magic Checkout 1CC Begins -->
+      {%- if shop.metafields.magic_checkout.buyNowEnabled == false -%}
+      {%- else -%}
+         <div style="margin-top : 10px;" class="">      
+            <magic-checkout-btn page-type="product" position="2" onclick="onBuyNowClickMagic(event)" border-radius="8px" width="" >       
+            </magic-checkout-btn>
+         </div>
+         <style>
+          @media only screen and (max-width: 767px){
+                                   .magic_checkout_cart{width: 100% !important;}
+                                  }
+           @media only screen and (min-width: 481px) and (max-width : 767px){
+                                   .magic_checkout_cart{width: 335px !important;}
+                                  }
+            @media only screen and (min-width: 768px){
+                                   .magic_checkout_cart{width: 437px !important;}
+                                  }
+          </style>
+      {%- endif -%}
+      <!--  Magic Checkout 1CC ends --> 
+        </div>
+      {% endif %}
+    {% endif %}
+
+    <select class="product-buy-buttons--select" name="id" data-mq="none">
+      {%- for variant in product.variants -%}
+        <option
+          value="{{ variant.id }}"
+          data-sku="{{ variant.sku }}"
+          data-inventory-management="{{ variant.inventory_management }}"
+          data-inventory-policy="{{ variant.inventory_policy }}"
+          data-available="{{ variant.available }}"
+          data-inventory-quantity="{{ variant.inventory_quantity | default: 0 }}"
+          {% if variant == current_variant %}
+            selected
+          {% endif %}
+        >
+          {{- variant.title -}}
+        </option>
+      {%- endfor -%}
+    </select>
+  {% endform %}
+</product-buy-buttons-root>
+
+<style>
+  .product-buy-buttons--primary.btn_50 .intro{display:none!important;}
+/*   .template--product .product-page--featured-blocks .product-page--block .product-buy-buttons--root {
+    display: inherit!important;
+    width: auto;
+} */
+.sticky_bottom{
+   position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%; 
+}
+</style>
+
+<script type="module">
+  import "{{ 'product-buy-buttons.js' | asset_url }}";
+</script>
+</div>
+    </div>
+</div>

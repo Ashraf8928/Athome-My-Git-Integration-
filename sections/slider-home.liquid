@@ -1,0 +1,101 @@
+<div class="slider_custom">
+  <h2 class="featured-grid--heading" data-item="section-heading">
+          {{ section.settings.title1 }}
+        </h2>
+  <ul class="slider">
+    {% for block in section.blocks %}
+      {% if forloop.index < 8 %}
+      <li class="nav-item1 active" data-tab="tab-{{ forloop.index }}">
+        <a class="nav-link1" href="{{ block.settings.link-url }}" >
+         <div class="image_red">
+           <img src="{{ block.settings.image | image_url: width: '480'   }}" alt="{{ block.settings.image.alt }}">
+         </div>
+          <div class="titile_cu">{{block.settings.title}}<div class="wishlist">{{ block.settings.wishlist }}</div></div>
+          <div class="titile_description">{{block.settings.description}}</div>
+          <div class="titile_view">{{block.settings.link-text}}</div>
+        </a>
+      </li>
+      {% endif %}
+    {% endfor %}</div>
+ </ul>
+
+{% schema %}
+  {
+  "name": "slider Home",
+  "class": "section--slideshow slider_home slider1234",
+  "settings": [
+ {
+      "id": "title1",
+      "label": "Heading",
+      "type": "text",
+      "default": "title"
+    }     
+  ],
+  "blocks": [
+    {
+      "type": "image",
+      "name": "Slide",
+      "settings": [
+        {
+          "id": "image",
+          "label": "Image",
+          "type": "image_picker"
+        },
+        {
+          "id": "title",
+          "label": "Heading",
+          "type": "textarea",
+          "default": "Slide heading"
+        },
+         {
+          "id": "wishlist",
+          "label": "Wish list code",
+          "type": "textarea",
+          "default": "Slide heading"
+        },
+        {
+          "id": "description",
+          "label": "Text",
+          "type": "textarea",
+          "default": "<p>Combine imagery with text to create stand-out campaign sections, eye-catching promotions, information blocks and more.</p>"
+        },
+        {
+          "id": "link-url",
+          "label": "Link",
+          "type": "url",
+          "default": "/"
+        },
+        {
+          "id": "link-text",
+          "label": "Link text",
+          "type": "text",
+          "default": "View more"
+        }
+      ]
+    }
+  ],
+  "presets": [{
+    "name": "slider Home",
+    "blocks": [
+      {
+        "type": "image"
+      },
+      {
+        "type": "image"
+      },
+      {
+        "type": "image"
+      },
+      {
+        "type": "image"
+      }
+    ]
+  }]
+}
+{% endschema %}
+
+{% stylesheet %}
+{% endstylesheet %}
+
+{% javascript %}
+{% endjavascript %}

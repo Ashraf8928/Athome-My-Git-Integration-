@@ -1,0 +1,392 @@
+{%- liquid
+  comment
+    Translations
+  endcomment
+  assign search_t = 'general.search.search' | t
+  assign cart_title_t = 'cart.title' | t
+
+  comment
+    Variables
+  endcomment
+
+  assign menu = section.settings.menu
+  assign logo = section.settings.logo
+  assign logo_height = section.settings.logo-height-range
+  assign popup_enabled = settings.popup--enabled
+  assign show_search = settings.search--show-in-header
+  assign cart_type = settings.cart--type
+-%}
+
+<header-root
+  class="header--root"
+  data-section-id="{{ section.id }}"
+  data-section-type="header"
+  {% if logo and logo_height >= 45 %}
+  data-header-logo-type="inline"
+  {% elsif logo %}
+  data-header-logo-type="overflowing"
+  {% endif %}>
+  <noscript>
+    <div class="header--container custom-header">
+      <div class="header--left-side">
+        {% if request.page_type == 'index' %}
+          <h1 class="header--logo">
+            {%
+               render 'logo',
+               logo: logo,
+               height_range: logo_height %}
+          </h1>
+        {% else %}
+          <div class="header--logo">
+            {%
+               render 'logo',
+               logo: logo,
+               height_range: logo_height %}
+          </div>
+        {% endif %}
+
+        {%
+           render 'x-menu',
+           overlap_parent: 1,
+           off_canvas: 'right-sidebar',
+           handle: menu,
+           noscript: true %}
+      </div>
+      <div class="header--middle-side 2" style="display:inline-block">
+        <div class="header--search-middle">
+          <form class="search" action="/search">
+            <input
+              type="text"
+              placeholder="What are you looking for"
+              name="q"
+              value="{{ search.terms | escape }}" />
+            <input type="submit" value="Search" />
+          </form>
+        </div>
+      </div>
+      <div class="header--right-side 1" data-item="nav-text">
+        {% comment %}{% if show_search %}
+        <div class="header--search">
+        <a href="{{ routes.search_url }}">{{ search_t }}</a>
+        </div>
+        {% endif %}{% endcomment %}
+        <a onclick="openChat()">{{ 'chat.svg' | asset_url | img_tag }}click to chat</a>
+
+        {% render 'login' %}
+
+
+        <div class="cart-link" data-item="nav-text">
+          <a href="{{ routes.cart_url }}">{{ cart_title_t }}</a>
+        </div>
+      </div>
+    </div>
+  </noscript>
+
+  <div class="header--y-menu-for-off-canvas" style="display:none;">
+    {% render 'y-menu', handle: menu %}
+  </div>
+
+  <div class="header--container">
+    <div class="header--left-side">
+      {% if request.page_type == 'index' %}
+        <h1 class="header--logo">
+          {%
+             render 'logo',
+             logo: logo,
+             height_range: logo_height %}
+        </h1>
+      {% else %}
+        <div class="header--logo">
+          {%
+             render 'logo',
+             logo: logo,
+             height_range: logo_height %}
+        </div>
+      {% endif %}
+
+    </div>
+    <div class="header--middle-side 1" style="display:inline-block">
+      <div class="header--search-middle">
+        <div class="search--bar">
+          <form class="search test" action="/search">
+            <input
+              type="text"
+              placeholder="What are you looking for"
+              name="q"
+              value="{{ search.terms | escape }}" />
+            <input type="submit" value="search" />
+          </form>
+        </div>
+        <div class="view_des">
+          <div class="headerTrendingSec">
+            <span>{% render 'insight-svg.liquid' %}<p>Trending Products</p>
+            </span>
+            <ul>
+              <li><a href="https://www.at-home.co.in/collections/beds">Beds</a></li>
+              <li><a href="https://www.at-home.co.in/collections/wardrobes">Wardrobes</a></li>
+              <li><a href="https://www.at-home.co.in/collections/wall-clocks">Wall Clocks</a></li>
+              <li><a href="https://www.at-home.co.in/collections/table-lamp">Table Lamps</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <div class="view_mobile">
+      <div class="headerTrendingSec">
+        <span>{% render 'insight-svg.liquid' %}<p>Trending Products</p>
+        </span>
+        <ul>
+          <li><a href="https://www.at-home.co.in/collections/beds">Beds</a></li>
+          <li><a href="https://www.at-home.co.in/collections/wardrobes">Wardrobes</a></li>
+          <li><a href="https://www.at-home.co.in/collections/wall-clocks">Wall Clocks</a></li>
+          <li><a href="https://www.at-home.co.in/collections/table-lamp">Table Lamps</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="header--right-side 2" data-item="nav-text">
+      {% comment %} <span  class="head-chat head-icons chat">{{ 'chat.svg' | asset_url | img_tag }}<span class="con_red">click to chat</span>
+
+      <ul class="submenu" style="display:none">
+      <li><a href="#" onclick="openChat()" class="user-chat1">Live Chat</a></li>
+      <li><a href="https://api.whatsapp.com/send?phone=919987386680&text=Hi" class="user-chat1" target="_blank">WhatsApp Chat </a> </li>
+
+
+      </ul>
+      </span> {% endcomment %}
+      {% comment %} {% if show_search %}
+      <div class="header--search">
+      <a href="{{ routes.search_url }}">{{ search_t }}</a>
+      </div>
+      {% endif %}{% endcomment %}
+
+      {% comment %}
+
+      {%- liquid
+      render 'login'
+
+      if popup_enabled
+      render 'popup', component: 'link'
+      endif
+      -%}{% endcomment %}
+        {% if shop.customer_accounts_enabled %}
+          {% if customer %}
+            <div class="head-icons"> {% if shop.customer_accounts_enabled %}
+              {% if customer %}
+                Hi!
+                <span class="underline">{{ customer.name }}</span>
+              {% else %}
+                <a href="#" class="cart-user">{% comment %} {% render 'log-in.liquid' %}{% endcomment %}
+                  <img src="https://cdn.shopify.com/s/files/1/0099/2867/1291/files/Log_in.svg?v=1665047931"></a>
+              {% endif %}
+            {% endif %}
+            <ul class="submenu" style="display:none">
+              {% if shop.customer_accounts_enabled %}
+                {% if customer %}
+                  <li>
+                    <a href="/account">ACCOUNT</a>
+                  </li>
+                  <li>
+                    <a href="/account/logout">LOGOUT</a>
+                  </li>
+                {% else %}
+                  <li>
+                    <a href="/account">LOGIN</a>
+                  </li>
+                  <li>
+                    <a href="/account/register">CREATE AN ACCOUNT</a>
+                  </li>
+                {% endif %}
+              {% endif %}
+            </ul>
+          </div>
+          <div class="wishlist">
+            <a class="iWishView mini_iwish" href="/apps/iwish">
+              {% render 'like-heart-head-svg.liquid.liquid' %}
+              <span class="iWishCount">0</span>
+            </a>
+          </div>
+        {% else %}
+          <div class="head-icons">
+            <a href="#" class="cart-user">{% render 'log-in.liquid' %}
+
+            </a>
+            <ul class="submenu" style="display:none">
+              {% if shop.customer_accounts_enabled %}
+                {% if customer %}
+                  <li>
+                    <a href="/account">ACCOUNT</a>
+                  </li>
+                  <li>
+                    <a href="/account/logout">LOGOUT</a>
+                  </li>
+                {% else %}
+                  <li>
+                    <a href="/account">LOGIN</a>
+                  </li>
+                  <li>
+                    <a href="/account/register">CREATE AN ACCOUNT</a>
+                  </li>
+                {% endif %}
+              {% endif %}
+            </ul>
+          </div>
+          <div class="wishlist">
+            <a class="iWishView mini_iwish" href="/apps/iwish">
+              {% render 'like-heart-head-svg.liquid.liquid' %}
+
+              <span class="iWishCount">0</span>
+            </a>
+          </div>
+        {% endif %}
+      {% endif %}
+
+      <div class="cart-link">
+        <a
+          {% if cart_type == 'drawer' %}
+          data-off-canvas--open="right-sidebar"
+          data-off-canvas--view="cart"
+          aria-haspopup="menu"
+          href="#"
+          {% else %}
+          href="{{ routes.cart_url }}"
+          {% endif %}>
+          {{ cart_title_t }}&nbsp;
+          <span class="cart--external--icon" data-item-count="{{ cart.item_count }}">
+            (<span class="cart--external--total-items">{{ cart.item_count }}</span>)
+          </span>
+        </a>
+      </div>
+
+      <a
+        class="header--cart-count"
+        data-item="nav-text"
+        {% if cart_type == 'drawer' %}
+        data-off-canvas--open="right-sidebar"
+        data-off-canvas--view="cart"
+        aria-haspopup="menu"
+        href="#"
+        {% else %}
+        href="{{ routes.cart_url }}"
+        {% endif %}>
+        <span class="cart--external--total-items">
+          {{ cart.item_count }}
+        </span>
+      </a>
+
+      <div
+        tabindex="0"
+        data-off-canvas--open="left-sidebar"
+        aria-haspopup="menu">
+        {% render 'icons', icon: 'menu' %}
+      </div>
+    </div>
+    <div class="out-site-cont">
+      {%
+         render 'x-menu',
+         overlap_parent: 1,
+         off_canvas: 'right-sidebar',
+         handle: menu %}
+    </div>
+  </div>
+
+</header-root>
+{% comment %} <div class="offersMessage">
+<h3>Get upto 6 month no cost EMI with exclusive credit card offers.<a href="#">T&C apply</a></h3>
+</div> {% endcomment %}{% render 'mobile-menu-icon' %}
+<script>
+  var lastScroll = 0;
+  var isScrolled = false;
+  window.addEventListener("scroll", function() {
+    var topHeader = document.querySelector(".header--root");
+    var currentScroll = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
+    var scrollDirection = currentScroll < lastScroll;
+    var shouldToggle = isScrolled && scrollDirection;
+    isScrolled = currentScroll > 100;
+    topHeader.classList.toggle("active1", shouldToggle);
+    lastScroll = currentScroll;
+  });
+</script>
+<style>
+  .mega_menu_custom .mega-menu {
+    width: 50%;
+    float: left;
+  }
+  .header--root {
+    transition: 1100ms ease;
+    top: -1000px;
+  }
+  .active1 {
+    transition: 1100ms ease;
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0;
+  }
+</style>
+<script type="module">
+  import "{{ 'header.js' | asset_url }}";
+</script>
+
+{% schema %}
+  {
+    "name": "Header",
+    "settings": [
+      {
+        "type": "image_picker",
+        "id": "logo",
+        "label": "Logo image"
+      }, {
+        "label": "Custom logo height",
+        "id": "logo-height-range",
+        "type": "range",
+        "min": 15,
+        "max": 100,
+        "step": 5,
+        "unit": "px",
+        "default": 35,
+        "info": "This is referring to the natural height and should be half the height of the image you uploaded to ensure it stays sharp on retina screens."
+      }, {
+        "type": "link_list",
+        "id": "menu",
+        "label": "Menu",
+        "default": "main-menu"
+      }, {
+        "type": "image_picker",
+        "id": "menu1_image",
+        "label": "Mega Menu1 image"
+      }
+    ],
+    "blocks": [
+      {
+        "type": "menu_promotion",
+        "name": "Menu promotion",
+        "settings": [
+          {
+            "type": "paragraph",
+            "content": "Menu promotions are shown in dropdown menus. They are not visible in the mobile menu."
+          },
+          {
+            "type": "text",
+            "id": "dropdown_link_title",
+            "label": "Dropdown link title",
+            "info": "Enter a dropdown menu item title to display the menu promotion on, e.g. 'Shop'. [Learn more](https://cleancanvas.co.uk/support/general/mega-menus#h_01EJB9WJN2QPHVTQPV8DCZQK07)"
+          },
+          {
+            "type": "image_picker",
+            "id": "image",
+            "label": "Image"
+          },
+          {
+            "type": "text",
+            "id": "text",
+            "label": "Text"
+          }, {
+            "type": "url",
+            "id": "link_url",
+            "label": "Link"
+          }
+        ]
+      }
+    ]
+  }
+{% endschema %}

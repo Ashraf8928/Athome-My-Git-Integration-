@@ -1,0 +1,48 @@
+<style>
+  .modular__testing{
+    position: relative;
+  }
+
+  .modular__testing__relative{
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    width: 100vw;
+    height: 10000px;
+  }
+
+  .modular__testing__right{
+    width: 50%;
+    border: 1px solid red;
+  }
+
+  .modular__testing__left{
+    width: 50%;
+    border: 1px solid black;
+  }
+
+  .modular__testing__left {
+    position: relative;
+  }
+
+  .sticky__div{
+    position: sticky;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    height: 200px;
+    top: 500px;
+    left: 10px;
+    margin-top: 500px;
+  }
+</style>
+<div class="modular__testing">
+  <div class="modular__testing__relative">
+    <div class="modular__testing__right">
+      
+    </div>
+    <div class="modular__testing__left">
+        <div class="sticky__div">
+          hi this is sticky 
+        </div>
+    </div>
+  </div>
+</div>

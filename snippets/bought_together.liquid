@@ -1,0 +1,177 @@
+{% if product.metafields['product']['buy_it_with'] != blank %}
+<div class="bought_together_container buy-it-now">
+    <h4>Frequently bought together</h4>
+    {%- assign buy_now = product.metafields['product']['buy_it_with'] -%}
+    {%- assign buy_now = buy_now | split:"," -%}
+    {%- if product.variants[0].available -%}
+    <span class="bought_together_main d_flex bought_main_price comman_price_format">
+        <span class="d_flex image_container">
+            {%- if product.variants[0].available -%}
+            <span class="added_product">
+                <span class="d_flex image_check_div">
+                    <span class="d_flex">
+                        <label class="chk_container desktop_hide">
+                            <input type="checkbox" class="custIn" id="chk1" v_id="{{product.variants[0].id}}"
+                            prop="{{product.variants[0].price}}" checked style="opacity: 0.01;">
+                            <span class="checkmark"></span>
+                        </label>
+                        <span class="d_flex image_add_symbol">
+                            <img src="{{product.images[0].src | product_img_url: '200x'}}"
+                            data-src="{{product.images[0].src | product_img_url: '200x'}}"
+                            data-widths="[180, 360, 540, 720, 900, 1080, 1296, 1512, 1728, 2048]"
+                            data-aspectratio="{{ product.featured_image.aspect_ratio }}" data-sizes="auto" tabindex="-1"
+                            alt="product-1" class="lazyload">
+                        </span>
+                    </span>
+                </span>
+                <!--p class="custom_title mobile_hide">{{product.title | capitalize}}</p>
+                <div class="no-js-hidden desktop_hide details_div" id="price-{{ section.id }}" role="status" {{
+                    block.shopify_attributes }}>
+                    <p class="custom_title">{{product.title | capitalize}}</p>
+                    {%- render 'price-bought', product: product, use_variant: true, show_badges: false, price_class:
+                    'price--large' -%}
+                </div-->
+            </span>
+            {%- else -%}
+            <p>This variant is not avialable</p>
+            {%- endif -%}
+            {% for product_handle in buy_now %}
+            {% assign productNew = all_products[product_handle] %}
+            {%- if productNew.variants[0].available -%}
+              <p class="add_symbol plus-sign">+</p>
+            <span class="added_product test">
+                <span class="d_flex image_check">
+                    <label class="chk_container desktop_hide">
+                        <input type="checkbox" class="custIn" v_id="{{productNew.variants[0].id}}"
+                        comp_price="{{comp_price}}" prop="{{productNew.variants[0].price}}" checked>
+                        <span class="checkmark"></span>
+                    </label>
+                    <img src="{{productNew.images[0].src | product_img_url: '200x'}}"
+                    data-src="{{productNew.images[0].src | product_img_url: '200x'}}"
+                    data-widths="[180, 360, 540, 720, 900, 1080, 1296, 1512, 1728, 2048]"
+                    data-aspectratio="{{ productNew.featured_image.aspect_ratio }}" data-sizes="auto" tabindex="-1"
+                    alt="product-1" class="lazyload">
+                   
+                </span>
+                <p class="custom_title mobile_hide">{{productNew.title | capitalize}}</p>
+                <div class="no-js-hidden desktop_hide details_div" id="price-{{ section.id }}" role="status" {{
+                    block.shopify_attributes }}>
+                    <p class="custom_title">{{productNew.title | capitalize}}</p>
+                    {%- render 'price-bought', product: productNew, use_variant: true, show_badges: false, price_class:
+                    'price--large' -%}
+                </div>
+             
+            </span>
+            {%- else -%}
+            <p>This variant is not avialable</p>
+            {%- endif -%}
+            
+            {% endfor %}
+        </span>
+        <span class="right-box price_container ">
+            {% assign current_product_price = product.price %}
+            {%- if product.variants[0].available -%}
+            <div class="no-js-hidden mobile_hide" id="price-{{ section.id }}" role="status" {{
+                block.shopify_attributes}}>
+                <span class="d_flex title_container">
+                    <label class="chk_container mobile_hide">
+                        <input type="checkbox" class="custIn" v_id="{{product.variants[0].id}}"
+                        prop="{{product.variants[0].price}}" checked>
+                        <span class="checkmark"></span>
+                    </label>
+                    <p class="custom_title">{{product.title | capitalize}}</p>
+                </span>
+                {%- render 'price-bought', product: product, use_variant: true, show_badges: false, price_class:'price--large' -%}
+                {% if product.compare_at_price > product.price %}
+                {%- assign current_save_price = product.compare_at_price_min | minus: product.price -%}
+                {%- endif -%}
+            </div>
+            {%- endif -%}
+          	{%- assign totalprice = current_product_price %}
+            {% for product_handle in buy_now %}
+            {% assign productNew = all_products[product_handle] %}
+            {%- if productNew.variants[0].available -%}
+            <span class="added_product mobile_hide">
+                <span class="d_flex title_container">
+                    <label class="chk_container mobile_hide">
+                        <input type="checkbox" class="custIn" v_id="{{productNew.variants[0].id}}"
+                        comp_price="{{comp_price}}" prop="{{productNew.variants[0].price}}" checked>
+                        <span class="checkmark"></span>
+                    </label>
+                    <p class="custom_title">{{productNew.title | capitalize}}</p>
+                    
+                </span>
+                
+                <div class="no-js-hidden mobile_hide" id="price-{{ section.id }}" role="status" {{ block.shopify_attributes }}>
+                    {%- render 'price-bought', product: productNew, use_variant: true, show_badges: false, price_class:
+                    'price--large' -%}
+                    {% if productNew.compare_at_price > productNew.price %}
+                    {%- assign saveprice = productNew.compare_at_price_min | minus: productNew.price -%}
+                    {%- endif -%}
+                </div>
+                
+            </span>
+ 
+          
+            {%- endif -%}       
+            {%- assign totalprice = totalprice | plus: productNew.variants[0].price -%}
+            {%- assign totalsave = current_save_price | plus: saveprice -%}
+            {% endfor %}
+            <span class="right-box-bottom d_flex">
+                <p class="total_price_div danger_color fw_600"><span class="button_secondary comman_button" id="but_it_with">Buy all at : <span id="cust_price">{{totalprice |
+                    money_without_trailing_zeros }}</span></span></p>
+                    {% comment %}{% if totalsave != blank %}
+                    <p class="total_save_price fw_600 ">Save : {{ totalsave | money_without_trailing_zeros }} </p>
+                    {%- endif -%}
+                    <p class="button_secondary comman_button" id="but_it_with">ADD ALL TO CART</p>{% endcomment %}
+                </span>
+            </span>
+        </span>
+        {%- endif -%}
+    </div>
+    {%- endif -%}
+    <script>
+        function myFunction(x) { 
+          if (x) { // If media query matches 
+            //alert("I am an alert box!");
+            $('.chk_container.desktop_hide input').addClass('custIn');
+            $('.chk_container.mobile_hide input').removeClass('custIn');
+            console.log('Classes added');
+          } else { 
+            //alert("x.matches");
+            $('.chk_container.desktop_hide input').removeClass('custIn');
+            $('.chk_container.mobile_hide input').addClass('custIn');
+            console.log('Classes removed');
+          }
+        }
+        
+        var x = window.matchMedia("(max-width: 900px)")
+        myFunction(x) // Call listener function at run time
+        x.addListener(myFunction) // Attach listener function on state changes
+       
+        $('#but_it_with').click(function () {
+          $(this).html('Adding To Cart');
+          $('.custIn').each(function () {
+            if ($(this).is(":checked")) {
+              var o = $(this).attr("v_id");
+              console.log(o, 'BI01 variant id');
+              var data = 'id=' +  o + '&quantity=1'
+              $.ajax({
+                type: 'POST',
+                url: '/cart/add.js',
+                dataType: 'json',
+                data: data,
+                async: false,
+                cache: false,
+                success: function (res) {
+                   setTimeout(function(){ window.location.assign('/cart'); }, 3000);
+                },
+                error: function (res) {
+                  console.log("res::",res.description);
+                }
+              });
+            }
+            
+          });
+        });
+      </script>

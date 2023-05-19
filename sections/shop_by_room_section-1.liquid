@@ -1,0 +1,82 @@
+
+<div class="shop_container ">
+
+<div class="featured-grid--body">
+  <div class="featured-grid--item-1">
+     {% if section.settings.menu-title != blank %}
+                <h3 class="footer--block--heading" data-item="block-heading">
+                  {{ section.settings.menu-title | escape }}
+                </h3>
+              {% endif %}
+  <div class="shop--block--body" role="navigation" data-item="paragraph">
+                {% if linklists[section.settings.menu].links.size > 0 %}
+                  {% assign footer_nav = section.settings.menu %}
+
+                  <ul
+                    class="footer--menu1">
+                    {% for link in linklists[footer_nav].links %}
+                      <li>
+                        <a href="{{ link.url }}" title="{{ link.title }}">
+                          {{ link.title }}
+                        </a>
+                      </li>
+                    {% endfor %}
+                  </ul>
+                {% endif %}
+              </div>
+  </div>
+  <div class="featured-grid--item-2">
+           <div class="shop_by_room1 left_img"> <img src="https://cdn.shopify.com/s/files/1/0099/2867/1291/{{section.settings.image}}" al="" title="" class="first-img"> 
+
+    </div>
+  </div>
+
+     </div>
+ 
+  <style>
+  
+  </style>
+</div>
+
+
+
+{% schema %}
+{
+ "name": "Section 1",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Layout and Color"
+    },
+{
+      "id": "image",
+      "label": "Image",
+      "type": "image_picker"
+   
+},{
+          "type": "text",
+          "id": "menu-title",
+          "label": "Title",
+          "default": "Quick links"
+        },
+        {
+          "type": "link_list",
+          "id": "menu",
+          "label": "Menu",
+          "default": "footer",
+          "info": "This menu won't show submenu items."
+        }
+],
+  "presets": [
+    {
+      "name": "Section 1"
+    }
+  ]
+  }
+{% endschema %}
+
+{% stylesheet %}
+{% endstylesheet %}
+
+{% javascript %}
+{% endjavascript %}

@@ -1,0 +1,38 @@
+{%- liquid
+  render 'cart', view: 'desktop'
+  render 'cart', view: 'mobile'
+-%}
+
+{% schema %}
+{
+"name": "Cart",
+"settings": []
+}
+{% endschema %}
+
+{% comment %} ======== admitad-retag ======== {% endcomment %}
+{% comment %} ======== Level 4. Cart page ======== {% endcomment %}
+<script type="text/javascript">
+  window.ad_products = [
+    {% for product in cart.items %}
+  {
+    "id": "{{ product.id }}",   // required
+      "number": "{{ product.quantity }}"
+  },
+  {% endfor %}
+    ];
+
+  window._retag = window._r                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               etag || [];
+  window._retag.push({ code: "9ce8884b35", level: 3 });
+  console.log("admitad-retag cart", window.ad_product);
+  (function () {
+    var id = "admitad-retag";
+    if (document.getElementById(id)) { return; }
+    var s = document.createElement("script");
+    s.async = true; s.id = id;
+    var r = (new Date).getDate();
+    s.src = (document.location.protocol == "https:" ? "https:" : "http:") + "//cdn.lenmit.com/static/js/retag.js?r=" + r;
+    var a = document.getElementsByTagName("script")[0]
+    a.parentNode.insertBefore(s, a);
+  })()
+</script>
